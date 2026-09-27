@@ -59,9 +59,11 @@ npm run build    # 提交前跑一遍，front-matter 写错会在这里报错
 
 ```text
 eco-wiki/
-├── site.config.ts              ← 站点名、域名、仓库地址（交接时改这里）
-├── CONTRIBUTING.md             ← 完整贡献指南
+├── README.md                   ← 给访客看的：这个站是什么
+├── CONTRIBUTING.md             ← 给写内容的人看的：怎么改
+├── HANDOVER.md                 ← 给管站点的人看的：怎么部署、怎么交接
 ├── src/
+│   ├── site.config.ts          ← 站点名、域名、仓库地址（交接时改这里）
 │   ├── content.config.ts       ← 内容字段的校验规则（一般不用改）
 │   ├── content/docs/           ← 教程正文：一个文件 = 一章
 │   │   ├── writing.md
@@ -182,7 +184,7 @@ npm run build     # 构建到 dist/，产出的就是可直接托管的静态文
 
 **平时不需要手动发布。** 仓库里配好了自动构建（`.github/workflows/deploy.yml`）：
 往 `main` 分支推一次，或者在 GitHub 网页上点一次 Commit，就会自动重新构建并上线，
-大约一两分钟。发布位置怎么配、交接怎么做，见仓库根目录的 `CONTRIBUTING.md`。
+大约一两分钟。写内容的具体规矩见 `CONTRIBUTING.md`，部署与交接见 `HANDOVER.md`。
 
 :::warn[确认没有报错再提交]
 如果 front-matter 少填了必填字段，或者 `group` 写错，构建会直接失败并指出是哪一行。
