@@ -1,0 +1,75 @@
+# 推送即部署：往 main 分支推一次，站点自动重新构建并上线。
+#
+# 第一次使用前，在 GitHub 仓库里只需要做一件事：
+#   Settings → Pages → Build and deployment → Source 选 “GitHub Actions”
+#
+# 域名和部署路径都不用配，下面会按仓库信息自动推导。三种部署形态的对应关系：
+#   个人/组织项目页   https://<用户名>.github.io/<仓库名>/   ← 默认，什么都不用配
+#   个人/组织主页仓库 https://<用户名>.github.io/            ← 把 BASE_PATH 设为 /
+#   自定义域名        https://eco.example.edu.cn/            ← SITE_URL 填域名，BASE_PATH 设为 /
+#
+# 后两种去 Settings → Secrets and variables → Actions → Variables 里加变量即可。
+
+name: 构建并发布站点
+
+on:
+  push:
+    branches: [main]
+  # 也可以在想手动重发时，去 Actions 页面点一次 “Run workflow”
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 连续推送时只保留最后一次，避免旧构建覆盖新构建
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+env:
+  # 两个都不配也能跑：默认按「项目页」自动推导成
+  #   https://<你的用户名>.github.io/<仓库名>/
+  # 只有下面两种情况才需要去 Settings → Variables 里手动配：
+  #   ① 绑了自定义域名          → SITE_URL 填域名，BASE_PATH 填 /
+  #   ② 仓库名形如 <用户名>.github.io（组织主页） → BASE_PATH 填 /
+  SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+  BASE_PATH: ${{ vars.BASE_PATH || format('/{0}', github.event.repository.name) }}
+
+jobs:
+  build:
+    name: 构建
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 构建静态站点
+        run: npm run build
+
+      - name: 上传构建产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: 发布
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,59 @@
+---
+/**
+ * Alethia-style floating mineral objects.
+ * Each rock is an irregular clip-path silhouette with layered mineral
+ * shading, a breathing sage glow, and a slow vertical float. The wrapper
+ * carries the mouse-parallax offset written by `effects.js`.
+ */
+const rocks = [
+  {
+    key: 'a',
+    depth: 0.018,
+    style: [
+      'width:190px',
+      'height:196px',
+      'right:7%',
+      'top:15%',
+      '--clip:polygon(34% 2%,66% 0%,94% 26%,92% 54%,72% 88%,40% 100%,10% 82%,0% 44%,14% 14%)',
+    ].join(';'),
+  },
+  {
+    key: 'b',
+    depth: 0.032,
+    style: [
+      'width:236px',
+      'height:230px',
+      'left:-2%',
+      'bottom:11%',
+      '--clip:polygon(26% 8%,60% 0%,88% 18%,100% 48%,88% 80%,58% 100%,22% 92%,4% 62%,6% 26%)',
+    ].join(';'),
+  },
+  {
+    key: 'c',
+    depth: 0.045,
+    style: [
+      'width:168px',
+      'height:164px',
+      'right:3%',
+      'bottom:9%',
+      '--clip:polygon(40% 0%,76% 14%,98% 44%,86% 76%,58% 100%,22% 90%,2% 60%,10% 20%)',
+    ].join(';'),
+  },
+];
+---
+
+<div class="hero__rocks" data-rocks aria-hidden="true">
+  {
+    rocks.map((rock) => (
+      <div
+        class={`rock rock--${rock.key}`}
+        data-depth={rock.depth}
+        style={rock.style}
+        data-rock
+      >
+        <span class="rock__glow" />
+        <span class="rock__body" />
+      </div>
+    ))
+  }
+</div>

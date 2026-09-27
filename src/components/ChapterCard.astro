@@ -1,0 +1,55 @@
+---
+import { withBase } from '../lib/url';
+
+interface Props {
+  id: string;
+  title: string;
+  summary: string;
+  chapter: number;
+  icon: string;
+  tags: string[];
+  status: 'stable' | 'review' | 'draft';
+  group: string;
+}
+
+const { id, title, summary, chapter, icon, tags, status, group } = Astro.props;
+
+const statusLabel: Record<string, string> = {
+  stable: '已定稿',
+  review: '待复核',
+  draft: '草稿',
+};
+
+const index = String(chapter).padStart(2, '0');
+---
+
+<article
+  class="chapter-card"
+  data-group={group}
+  data-tags={tags.join(',')}
+  data-chapter={chapter}
+>
+  <span class="chapter-card__wash" aria-hidden="true"></span>
+
+  <header class="chapter-card__head">
+    <span class="chapter-card__num" aria-hidden="true">{index}</span>
+    <span class="chapter-card__icon" aria-hidden="true">{icon}</span>
+  </header>
+
+  <h3 class="chapter-card__title">{title}</h3>
+
+  <p class="chapter-card__summary">{summary}</p>
+
+  <footer class="chapter-card__foot">
+    <span class={`pill pill--${status}`}>{statusLabel[status]}</span>
+    {tags.slice(0, 3).map((tag) => <span class="tagline">{tag}</span>)}
+  </footer>
+
+  <a
+    class="chapter-card__link"
+    href={withBase(`/wiki/${id}/`)}
+    data-cursor="card"
+    data-cursor-label="阅读"
+    aria-label={`阅读第 ${chapter} 章：${title}`}
+  ></a>
+</article>

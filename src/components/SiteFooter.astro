@@ -1,0 +1,35 @@
+---
+import { withBase } from '../lib/url';
+import { site, repoReady, repoUrl, contributingUrl } from '../site.config';
+
+const year = new Date().getFullYear();
+
+const links = [
+  { to: '/wiki/', label: '章节目录' },
+  { to: '/legacy/', label: '数字遗产' },
+  { to: '/wiki/first-week/', label: '新人路线' },
+  { to: '/wiki/maintaining-the-wiki/', label: '如何维护' },
+  { to: '/wiki/resources/', label: 'FAQ 与术语表' },
+];
+---
+
+<footer class="site-footer">
+  <div class="shell site-footer__inner">
+    <p>
+      © {year} {site.steward} · 教程站
+      <span aria-hidden="true"> · </span>
+      内容以 Markdown 维护，欢迎直接提交修改
+    </p>
+    <nav class="site-footer__links" aria-label="页脚导航">
+      {links.map((link) => <a href={withBase(link.to)}>{link.label}</a>)}
+      {
+        repoReady && (
+          <>
+            <a href={repoUrl} target="_blank" rel="noopener noreferrer">仓库</a>
+            <a href={contributingUrl} target="_blank" rel="noopener noreferrer">贡献指南</a>
+          </>
+        )
+      }
+    </nav>
+  </div>
+</footer>

@@ -1,0 +1,203 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EditLink from '../../components/EditLink.astro';
+import { withBase } from '../../lib/url';
+import { site, repoReady, editFileUrl, historyUrl } from '../../site.config';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map((doc) => ({ params: { slug: doc.id }, props: { doc } }));
+}
+
+const { doc } = Astro.props;
+const { Content, headings } = await render(doc);
+
+const all = (await getCollection('docs')).sort((a, b) => a.data.chapter - b.data.chapter);
+const index = all.findIndex((item) => item.id === doc.id);
+const prev = index > 0 ? all[index - 1] : null;
+const next = index < all.length - 1 ? all[index + 1] : null;
+
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const hasChecklist = typeof doc.body === 'string' && doc.body.includes('- [ ]');
+
+const statusLabel: Record<string, string> = {
+  stable: '已定稿',
+  review: '待复核',
+  draft: '草稿',
+};
+
+const updated = doc.data.updated;
+const updatedText = updated
+  ? new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(updated)
+  : '—';
+
+// 源文件在仓库里的位置 —— 用来生成「去 GitHub 改这一页」的地址
+const filePath = doc.filePath ?? `${site.docsDir}/${doc.id}.md`;
+const editHref = editFileUrl(filePath);
+const histHref = historyUrl(filePath);
+---
+
+<BaseLayout
+  title={doc.data.title}
+  pageKey={`doc-${doc.id}`}
+  description={doc.data.summary}
+>
+  <div class="read-progress" id="read-progress" aria-hidden="true"></div>
+
+  <div class="shell">
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href={withBase('/')}>首页</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      <a href={withBase('/wiki/')}>章节目录</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      <span>第 {doc.data.chapter} 章</span>
+    </nav>
+
+    <div class="reader">
+      <article>
+        <header class="article-head">
+          <div class="article-head__meta">
+            <span class="article-head__chapter">
+              CHAPTER {String(doc.data.chapter).padStart(2, '0')}
+            </span>
+            <span class={`pill pill--${doc.data.status}`}>{statusLabel[doc.data.status]}</span>
+            {doc.data.tags.map((tag) => <span class="tagline">{tag}</span>)}
+          </div>
+
+          <h1 class="article-head__title">
+            <span class="article-head__icon" aria-hidden="true">{doc.data.icon}</span>
+            {doc.data.title}
+          </h1>
+
+          <p class="article-head__summary">{doc.data.summary}</p>
+
+          {hasChecklist && (
+            <p style="margin-top:var(--s-4)">
+              <button class="btn btn--ghost" type="button" data-reset-checklist>
+                清空本页勾选状态
+              </button>
+            </p>
+          )}
+        </header>
+
+        <div class="prose" data-prose>
+          <Content />
+        </div>
+
+        <div class="article-foot">
+          <p class="article-foot__prompt">
+            这一页是活的 —— 发现过时、说错、或者你踩过的坑没写进来，直接改。
+          </p>
+          {
+            repoReady ? (
+              <div class="article-foot__actions">
+                <EditLink href={editHref} label="在 GitHub 上编辑本页" cursorLabel="编辑" />
+                <EditLink
+                  href={histHref}
+                  label="修订历史"
+                  icon="history"
+                  variant="compact"
+                  cursorLabel="历史"
+                />
+              </div>
+            ) : (
+              <p class="article-foot__hint">
+                维护方式见 <a href={withBase('/wiki/maintaining-the-wiki/')}>如何维护这个 Wiki</a>。
+              </p>
+            )
+          }
+        </div>
+
+        <nav class="prev-next" aria-label="章节导航">
+          {
+            prev ? (
+              <a
+                class="prev-next__item"
+                href={withBase(`/wiki/${prev.id}/`)}
+                data-cursor="card"
+                data-cursor-label="上一章"
+              >
+                <span class="prev-next__dir">← 上一篇</span>
+                <span class="prev-next__title">{prev.data.title}</span>
+              </a>
+            ) : (
+              <span class="prev-next__item prev-next__item--empty" aria-hidden="true">
+                <span class="prev-next__dir">← 上一篇</span>
+                <span class="prev-next__title">已经是第一篇</span>
+              </span>
+            )
+          }
+
+          {
+            next ? (
+              <a
+                class="prev-next__item prev-next__item--next"
+                href={withBase(`/wiki/${next.id}/`)}
+                data-cursor="card"
+                data-cursor-label="下一章"
+              >
+                <span class="prev-next__dir">下一篇 →</span>
+                <span class="prev-next__title">{next.data.title}</span>
+              </a>
+            ) : (
+              <span
+                class="prev-next__item prev-next__item--next prev-next__item--empty"
+                aria-hidden="true"
+              >
+                <span class="prev-next__dir">下一篇 →</span>
+                <span class="prev-next__title">已经是最后一篇</span>
+              </span>
+            )
+          }
+        </nav>
+      </article>
+
+      <aside class="reader__aside">
+        {toc.length > 0 && (
+          <nav aria-label="本页目录">
+            <p class="toc__label">本页目录</p>
+            <div class="toc__list">
+              {toc.map((heading) => (
+                <a
+                  class={`toc__link${heading.depth === 3 ? ' toc__link--sub' : ''}`}
+                  href={`#${heading.slug}`}
+                >
+                  {heading.text}
+                </a>
+              ))}
+            </div>
+          </nav>
+        )}
+
+        <div class="meta-block">
+          <p class="meta-block__label">页面信息</p>
+          <dl>
+            <dt>状态</dt>
+            <dd>{statusLabel[doc.data.status]}</dd>
+            <dt>维护人</dt>
+            <dd>{doc.data.maintainer}</dd>
+            <dt>最后更新</dt>
+            <dd>{updatedText}</dd>
+            <dt>源文件</dt>
+            <dd>
+              {
+                repoReady ? (
+                  <a class="meta-block__link" href={editHref} target="_blank" rel="noopener noreferrer">
+                    {filePath}
+                  </a>
+                ) : (
+                  <span>{filePath}</span>
+                )
+              }
+            </dd>
+          </dl>
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import '../../scripts/toc.js';
+</script>

@@ -1,0 +1,84 @@
+---
+import { withBase, currentPath } from '../lib/url';
+
+const links = [
+  { to: '/', label: '首页' },
+  { to: '/wiki/', label: '章节目录' },
+  { to: '/wiki/first-week/', label: '新人路线' },
+  { to: '/legacy/', label: '数字遗产' },
+  { to: '/wiki/maintaining-the-wiki/', label: '维护指南' },
+];
+
+const current = currentPath(Astro.url.pathname);
+const isCurrent = (to: string) => {
+  const normalized = to.replace(/\/+$/, '') || '/';
+  if (normalized === '/') return current === '/';
+  return current === normalized;
+};
+---
+
+<header class="site-header" id="site-header">
+  <div class="shell site-header__inner">
+    <a class="brand" href={withBase('/')} aria-label="返回首页">
+      <span class="brand__slash">/</span>
+      <span>eco</span>
+      <span class="brand__sub">宣传部教程站</span>
+    </a>
+
+    <nav class="site-nav" aria-label="主导航">
+      {
+        links.map((link) => (
+          <a
+            class="site-nav__link"
+            href={withBase(link.to)}
+            aria-current={isCurrent(link.to) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <button class="header-search" type="button" data-open-search aria-label="打开搜索">
+      <span class="header-search__label">搜索教程…</span>
+      <span class="header-search__key">/</span>
+    </button>
+
+    <button class="nav-toggle" type="button" id="nav-toggle" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-nav">
+      <span></span>
+    </button>
+  </div>
+
+  <nav class="mobile-nav" id="mobile-nav" hidden aria-label="移动端导航">
+    {
+      links.map((link) => (
+        <a class="mobile-nav__link" href={withBase(link.to)} aria-current={isCurrent(link.to) ? 'page' : undefined}>
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+</header>
+
+<div class="search-overlay" id="search-overlay" role="dialog" aria-modal="true" aria-label="搜索教程">
+  <div class="search-panel">
+    <div class="search-panel__field">
+      <span class="eyebrow" aria-hidden="true">SEARCH</span>
+      <input
+        type="search"
+        id="search-input"
+        placeholder="搜索章节、规范、参数…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="搜索关键词"
+      />
+      <kbd>ESC</kbd>
+    </div>
+    <div class="search-results" id="search-results" role="listbox" aria-label="搜索结果"></div>
+    <div class="search-panel__foot">
+      <span>↑ ↓ 选择</span>
+      <span>Enter 打开</span>
+      <span id="search-count">—</span>
+    </div>
+  </div>
+</div>

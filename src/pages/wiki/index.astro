@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ChapterCard from '../../components/ChapterCard.astro';
+import EditLink from '../../components/EditLink.astro';
+import { withBase } from '../../lib/url';
+import { site, repoReady, newFileUrl } from '../../site.config';
+
+const docs = (await getCollection('docs')).sort((a, b) => a.data.chapter - b.data.chapter);
+
+const GROUP_META = [
+  { key: 'core', label: '核心技能', note: '写稿、拍摄、排版、设计 —— 手上功夫，练熟了就能独立出活' },
+  { key: 'workflow', label: '流程与规范', note: '发表与协作，决定一篇稿子能不能、以及什么时候发出去' },
+  { key: 'reference', label: '参考与元信息', note: '新人路线、FAQ、术语表，以及这个站本身的维护方式' },
+];
+
+const groups = GROUP_META.map((meta) => ({
+  ...meta,
+  docs: docs.filter((doc) => doc.data.group === meta.key),
+})).filter((group) => group.docs.length > 0);
+
+const allTags = Array.from(new Set(docs.flatMap((doc) => doc.data.tags))).sort();
+---
+
+<BaseLayout
+  title="章节目录"
+  pageKey="catalog"
+  description="生态学院宣传部教程站的全部章节：撰写文稿、相机拍摄、排版设计、发表规范、设计工具与协作流程。"
+>
+  <div class="shell">
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href={withBase('/')}>首页</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      <span>章节目录</span>
+    </nav>
+
+    <header class="catalog-head">
+      <div>
+        <p class="eyebrow">全部章节 · {docs.length} ENTRIES</p>
+        <h1 class="catalog-head__title">{docs.length} 篇，按顺序读一遍就够用了</h1>
+      </div>
+      <div class="catalog-head__aside">
+        <p class="catalog-head__note">
+          每篇都能单独维护。想加新内容，在 <code>src/content/docs/</code> 里新建一个 Markdown 文件即可。
+        </p>
+        {
+          repoReady && (
+            <p class="catalog-head__actions">
+              <EditLink
+                href={newFileUrl(site.docsDir, 'new-chapter.md')}
+                label="新建一章"
+                icon="plus"
+                cursorLabel="新建"
+              />
+            </p>
+          )
+        }
+      </div>
+    </header>
+
+    <div class="filter-bar" role="group" aria-label="按类别筛选">
+      <button class="filter-chip" type="button" data-filter-value="all" aria-pressed="true">全部</button>
+      {
+        groups.map((group) => (
+          <button class="filter-chip" type="button" data-filter-value={group.key} aria-pressed="false">
+            {group.label}
+          </button>
+        ))
+      }
+      <span class="filter-bar__count" data-filter-count></span>
+    </div>
+
+    {
+      groups.map((group) => (
+        <section class="catalog-group" data-group-head={group.key} aria-label={group.label}>
+          <div class="group-head">
+            <span class="group-head__label">{group.label}</span>
+            <span class="group-head__rule" aria-hidden="true" />
+            <span class="count-label">{group.docs.length} 章</span>
+          </div>
+          <p class="catalog-group__note">{group.note}</p>
+          <div class="chapter-grid">
+            {group.docs.map((doc) => (
+              <ChapterCard
+                id={doc.id}
+                title={doc.data.title}
+                summary={doc.data.summary}
+                chapter={doc.data.chapter}
+                icon={doc.data.icon}
+                tags={doc.data.tags}
+                status={doc.data.status}
+                group={doc.data.group}
+              />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <p class="empty-note" data-filter-empty hidden>这个分类下暂时没有内容。</p>
+
+    <section class="tag-cloud" aria-labelledby="tags-heading">
+      <h2 class="eyebrow" id="tags-heading">全部标签</h2>
+      <div class="tag-cloud__items">
+        {allTags.map((tag) => <span class="tagline">{tag}</span>)}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

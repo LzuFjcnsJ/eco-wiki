@@ -1,0 +1,619 @@
+/* ============================================================
+   Prose — wiki article body + reader layout
+   ============================================================ */
+
+.reader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: var(--s-8);
+  align-items: start;
+  padding-top: var(--s-7);
+}
+
+@media (max-width: 1080px) {
+  .reader {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+  .reader__aside {
+    display: none;
+  }
+}
+
+/* ---------- Article header ---------- */
+.article-head {
+  padding-bottom: var(--s-6);
+  border-bottom: 1px solid var(--border-neutral);
+  margin-bottom: var(--s-7);
+}
+.article-head__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  margin-bottom: var(--s-5);
+}
+.article-head__chapter {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.article-head__title {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  font-family: var(--font-display);
+  font-size: var(--step-5);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.article-head__icon {
+  font-size: 0.6em;
+  line-height: 1;
+}
+.article-head__summary {
+  max-width: 62ch;
+  margin-top: var(--s-5);
+  color: var(--text-secondary);
+  font-size: var(--step-1);
+}
+
+/* ---------- Prose body ---------- */
+.prose {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  max-width: 72ch;
+}
+
+.prose > * + * {
+  margin-top: var(--s-5);
+}
+
+.prose h2 {
+  margin-top: var(--s-8);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--border-neutral);
+  font-size: var(--step-3);
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  scroll-margin-top: calc(var(--header-h) + var(--s-5));
+}
+.prose h3 {
+  margin-top: var(--s-7);
+  font-size: var(--step-1);
+  font-weight: 500;
+  color: var(--text-primary);
+  scroll-margin-top: calc(var(--header-h) + var(--s-5));
+}
+.prose h4 {
+  margin-top: var(--s-6);
+  font-size: var(--step-0);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.prose strong {
+  color: #F4F9F7;
+  font-weight: 500;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-dim);
+  transition: border-color var(--t-fast) var(--ease-out);
+}
+.prose a:hover {
+  border-bottom-color: var(--accent);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.1rem;
+}
+.prose li {
+  position: relative;
+  padding-left: 0.4rem;
+}
+.prose li + li {
+  margin-top: var(--s-2);
+}
+.prose ul > li::before {
+  content: '';
+  position: absolute;
+  left: -1.05rem;
+  top: 0.72em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-deep);
+}
+.prose ol {
+  list-style: decimal;
+}
+.prose ol > li::marker {
+  color: var(--accent-deep);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+.prose blockquote {
+  padding: var(--s-4) var(--s-5);
+  border-left: 2px solid var(--border-strong);
+  background: var(--bg-inset);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  color: var(--text-secondary);
+}
+.prose blockquote p + p {
+  margin-top: var(--s-3);
+}
+
+.prose hr {
+  height: 1px;
+  border: none;
+  background: var(--border-neutral);
+  margin-block: var(--s-7);
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  padding: 0.12em 0.4em;
+  border-radius: var(--r-xs);
+  background: rgba(32, 229, 181, 0.08);
+  border: 1px solid var(--border-neutral);
+  color: var(--accent-soft);
+}
+.prose pre {
+  padding: var(--s-5);
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-neutral);
+  background: var(--bg-void) !important;
+  overflow-x: auto;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+.prose pre code {
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+/* ---------- Tables ---------- */
+.prose .table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-neutral);
+  border-radius: var(--r-md);
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+.prose thead {
+  background: var(--bg-surface);
+}
+.prose th {
+  padding: var(--s-3) var(--s-4);
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.prose td {
+  padding: var(--s-3) var(--s-4);
+  border-top: 1px solid var(--border-neutral);
+  vertical-align: top;
+  color: var(--text-secondary);
+}
+.prose tbody tr:hover td {
+  background: rgba(32, 229, 181, 0.03);
+  color: var(--text-primary);
+}
+
+/* ---------- Checklists (task lists) ---------- */
+.prose ul.contains-task-list {
+  padding-left: 0;
+}
+.prose li.task-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding-left: 0;
+}
+.prose li.task-list-item::before {
+  content: none;
+}
+.prose input[type='checkbox'] {
+  appearance: none;
+  flex: none;
+  width: 17px;
+  height: 17px;
+  margin-top: 0.34em;
+  border: 1px solid var(--border-neutral-strong);
+  border-radius: var(--r-xs);
+  background: var(--bg-inset);
+  position: relative;
+  transition:
+    border-color var(--t-fast) var(--ease-out),
+    background-color var(--t-fast) var(--ease-out);
+}
+.prose input[type='checkbox']:hover {
+  border-color: var(--accent-line);
+}
+.prose input[type='checkbox']:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.prose input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 1px;
+  width: 4px;
+  height: 9px;
+  border: solid var(--text-inverse);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* ---------- Callouts (rendered from ::: directives) ---------- */
+.callout {
+  --callout-accent: var(--accent);
+  --callout-wash: var(--accent-ghost);
+  position: relative;
+  padding: var(--s-5) var(--s-5) var(--s-5) var(--s-6);
+  border: 1px solid var(--border-neutral);
+  border-left: 2px solid var(--callout-accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: linear-gradient(100deg, var(--callout-wash), transparent 62%);
+}
+.callout > * + * {
+  margin-top: var(--s-3);
+}
+.callout__label {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--callout-accent);
+}
+.callout__mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  font-size: 0.625rem;
+  line-height: 1;
+}
+.callout p {
+  color: var(--text-secondary);
+}
+.callout strong {
+  color: var(--text-primary);
+}
+.callout ul {
+  padding-left: 1.1rem;
+}
+.callout ol {
+  list-style: decimal;
+  padding-left: 1.4rem;
+}
+
+.callout--danger {
+  --callout-accent: var(--danger);
+  --callout-wash: var(--danger-ghost);
+}
+.callout--warn {
+  --callout-accent: var(--warn);
+  --callout-wash: var(--warn-ghost);
+}
+.callout--good {
+  --callout-accent: var(--success);
+  --callout-wash: var(--success-ghost);
+}
+.callout--bad {
+  --callout-accent: var(--danger);
+  --callout-wash: var(--danger-ghost);
+}
+.callout--info {
+  --callout-accent: var(--sage);
+  --callout-wash: var(--sage-ghost);
+}
+
+/* ---------- Reader aside: TOC + meta ---------- */
+.reader__aside {
+  position: sticky;
+  top: calc(var(--header-h) + var(--s-6));
+  display: grid;
+  gap: var(--s-6);
+  font-size: var(--step--2);
+}
+.toc__label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  padding-bottom: var(--s-3);
+  border-bottom: 1px solid var(--border-neutral);
+}
+.toc__list {
+  margin-top: var(--s-3);
+  display: grid;
+  gap: var(--s-1);
+  border-left: 1px solid var(--border-neutral);
+}
+.toc__link {
+  display: block;
+  padding: 0.28rem 0 0.28rem var(--s-4);
+  margin-left: -1px;
+  border-left: 2px solid transparent;
+  color: var(--text-tertiary);
+  line-height: 1.45;
+  transition:
+    color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out);
+}
+.toc__link:hover {
+  color: var(--text-primary);
+}
+.toc__link.is-active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+.toc__link--sub {
+  padding-left: calc(var(--s-4) + 0.75rem);
+  font-size: 0.75rem;
+}
+
+.meta-block {
+  padding: var(--s-4);
+  border: 1px solid var(--border-neutral);
+  border-radius: var(--r-sm);
+  background: var(--bg-inset);
+}
+.meta-block__label {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.meta-block dl {
+  margin-top: var(--s-3);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--s-2) var(--s-4);
+  font-size: var(--step--2);
+}
+.meta-block dt {
+  color: var(--text-tertiary);
+}
+.meta-block dd {
+  color: var(--text-secondary);
+  text-align: right;
+}
+
+/* ---------- Prev / next navigation ---------- */
+.prev-next {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-8);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--border-neutral);
+}
+.prev-next__item {
+  display: grid;
+  gap: var(--s-2);
+  padding: var(--s-5);
+  border: 1px solid var(--border-neutral);
+  border-radius: var(--r-md);
+  transition:
+    border-color var(--t-base) var(--ease-out),
+    transform var(--t-base) var(--ease-out),
+    box-shadow var(--t-base) var(--ease-out);
+}
+.prev-next__item:hover {
+  border-color: var(--accent-line);
+  transform: translateY(-3px);
+  box-shadow: var(--glow-accent);
+}
+.prev-next__item--next {
+  text-align: right;
+}
+.prev-next__dir {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.prev-next__title {
+  font-size: var(--step-0);
+  font-weight: 500;
+}
+.prev-next__item--empty {
+  border-style: dashed;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+@media (max-width: 620px) {
+  .prev-next {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .prev-next__item--next {
+    text-align: left;
+  }
+}
+
+/* ---------- Breadcrumb ---------- */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding-top: var(--s-5);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+.breadcrumb a:hover {
+  color: var(--accent);
+}
+.breadcrumb__sep {
+  opacity: 0.5;
+}
+
+/* ---------- Reading progress ---------- */
+.read-progress {
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  z-index: 105;
+  height: 1px;
+  width: 0%;
+  background: var(--accent);
+  opacity: 0.55;
+  transition: width 0.1s linear;
+}
+
+/* ---------- Group heading in catalog ---------- */
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-block: var(--s-7) var(--s-4);
+}
+.group-head__label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+}
+.group-head__rule {
+  flex: 1;
+  height: 1px;
+  background: var(--border-neutral);
+}
+
+/* ---------- Wiki-authoring note on index ---------- */
+.note-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 1px dashed var(--border-neutral-strong);
+  border-radius: var(--r-md);
+  background: var(--sage-ghost);
+}
+.note-strip__icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(184, 204, 140, 0.4);
+  color: var(--sage);
+  font-size: 0.875rem;
+}
+.note-strip__text {
+  flex: 1;
+  min-width: 240px;
+  font-size: var(--step--1);
+  color: var(--text-secondary);
+}
+.note-strip code {
+  font-family: var(--font-mono);
+  font-size: 0.8125em;
+  color: var(--sage-soft);
+  background: rgba(184, 204, 140, 0.1);
+  border: 1px solid rgba(184, 204, 140, 0.22);
+  border-radius: var(--r-xs);
+  padding: 0.1em 0.35em;
+}
+.note-strip__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+}
+
+/* ---------- 文章底部：编辑入口 ---------- */
+.article-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  margin-top: var(--s-6);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--border-neutral);
+  border-left: 2px solid rgba(184, 204, 140, 0.45);
+  border-radius: var(--r-sm);
+  background: var(--bg-inset);
+}
+.article-foot__prompt {
+  flex: 1 1 18rem;
+  margin: 0;
+  font-size: var(--step--2);
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+.article-foot__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+}
+.article-foot__hint {
+  flex: 1 1 14rem;
+  margin: 0;
+  text-align: right;
+  font-size: var(--step--2);
+  color: var(--text-tertiary);
+}
+.article-foot__hint a {
+  color: var(--sage);
+  border-bottom: 1px solid var(--sage-ghost);
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out);
+}
+.article-foot__hint a:hover {
+  color: var(--sage-soft);
+  border-bottom-color: rgba(184, 204, 140, 0.45);
+}
+
+/* 侧栏「源文件」那一行点进去就是编辑页 */
+.meta-block__link {
+  color: var(--text-secondary);
+  word-break: break-all;
+  border-bottom: 1px solid var(--border-neutral-strong);
+  transition:
+    color var(--t-fast) var(--ease-out),
+    border-color var(--t-fast) var(--ease-out);
+}
+.meta-block__link:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent-line);
+}

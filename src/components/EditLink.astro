@@ -1,0 +1,48 @@
+---
+/**
+ * 「去 GitHub 上改这一页」的入口链接。
+ *
+ * 只在 site.config.ts 里填了 org / repo 时才会被渲染出去 ——
+ * 调用方负责用 repoReady 判断，未配置时整块不出现，不留死链。
+ */
+interface Props {
+  href: string;
+  label: string;
+  /** compact 用在正文里（如每条档案下方），default 用在文章末尾的行动行 */
+  variant?: 'default' | 'compact';
+  icon?: 'pencil' | 'history' | 'plus';
+  /** 悬停时是否显示自定义光标的文字提示 */
+  cursorLabel?: string;
+}
+
+const { href, label, variant = 'default', icon = 'pencil', cursorLabel } = Astro.props;
+
+const paths: Record<string, string[]> = {
+  pencil: ['M14.5 4.5 11.5 1.5 3 10v3h3z', 'M10.2 2.8l3 3'],
+  history: ['M8 2.5a5.5 5.5 0 1 1-5.3 7', 'M8 4.8V8l2.4 1.5', 'M2.5 3.6v2.8h2.8'],
+  plus: ['M8 3.2v9.6', 'M3.2 8h9.6'],
+};
+---
+
+<a
+  class:list={['edit-link', variant === 'compact' && 'edit-link--compact']}
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  data-cursor="link"
+  data-cursor-label={cursorLabel}
+>
+  <svg
+    class="edit-link__icon"
+    viewBox="0 0 16 16"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    {paths[icon].map((d) => <path d={d} />)}
+  </svg>
+  <span>{label}</span>
+</a>

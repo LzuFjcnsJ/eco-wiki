@@ -1,0 +1,75 @@
+---
+import '../styles/tokens.css';
+import '../styles/base.css';
+import '../styles/components.css';
+import '../styles/prose.css';
+import LoadingBar from '../components/LoadingBar.astro';
+import CustomCursor from '../components/CustomCursor.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ToTop from '../components/ToTop.astro';
+import { withBase } from '../lib/url';
+import { site } from '../site.config';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Drives the shared-progress key so the loading bar replays per navigation. */
+  pageKey?: string;
+}
+
+const {
+  title,
+  description = '生态学院宣传部教程站 —— 撰写文稿、相机拍摄、排版设计、发表规范、设计工具与协作流程，全部可协作维护。',
+  pageKey = 'default',
+} = Astro.props;
+
+const fullTitle = title === '首页' ? '宣传部 · 教程站' : `${title} · 教程站`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#08110F" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Noto+Serif+SC:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body data-page={pageKey}>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+
+    <LoadingBar />
+    <CustomCursor />
+    <SiteHeader />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <SiteFooter />
+    <ToTop />
+
+    <script>
+      import '../scripts/ui.js';
+      import '../scripts/cursor.js';
+      import '../scripts/search.js';
+    </script>
+  </body>
+</html>

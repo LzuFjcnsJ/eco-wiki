@@ -1,0 +1,15 @@
+# 依赖
+node_modules/
+
+# 构建产物（本地或 CI 生成，不进版本库）
+dist/
+.astro/
+
+# 无头浏览器做视觉验收时留下的临时 profile
+preview/profile*/
+preview/shot-profile*/
+
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+*.log

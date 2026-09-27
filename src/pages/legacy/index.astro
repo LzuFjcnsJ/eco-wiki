@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LegacyEntry from '../../components/LegacyEntry.astro';
+import EditLink from '../../components/EditLink.astro';
+import { withBase } from '../../lib/url';
+import { site, repoReady, newFileUrl, editFileUrl } from '../../site.config';
+
+const entries = await getCollection('legacy');
+
+const ordered = entries.slice().sort((a, b) => {
+  if (b.data.year !== a.data.year) return b.data.year - a.data.year;
+  if (a.data.stage !== b.data.stage) return a.data.stage === 'in-office' ? -1 : 1;
+  return a.data.name.localeCompare(b.data.name, 'zh-CN');
+});
+
+const years = [...new Set(ordered.map((entry) => entry.data.year))].sort((a, b) => b - a);
+
+const inOffice = entries.filter((entry) => entry.data.stage === 'in-office').length;
+const alumni = entries.filter((entry) => entry.data.stage === 'alumni').length;
+const pending = entries.filter((entry) => entry.data.placeholder).length;
+---
+
+<BaseLayout
+  title="数字遗产"
+  pageKey="legacy"
+  description="宣传部教程站的编年档案：每一届留下的一句话。这一页会随着部门存续持续生长。"
+>
+  <div class="shell">
+    <nav class="breadcrumb" aria-label="面包屑">
+      <a href={withBase('/')}>首页</a>
+      <span class="breadcrumb__sep" aria-hidden="true">/</span>
+      <span>数字遗产</span>
+    </nav>
+
+    <header class="legacy-head">
+      <p class="eyebrow">DIGITAL LEGACY · {String(entries.length).padStart(2, '0')} ENTRIES</p>
+      <h1 class="legacy-head__title">每一届，留一句话</h1>
+      <p class="legacy-head__lede">
+        教程站里的规范回答「怎么做」，这一页记的是「为什么」。它不是纪念册 ——
+        档案按年份往后排，每一届在任时写、毕业后再补。只要宣传部还在，它就会一直长下去。
+      </p>
+      <div class="legacy-head__stats">
+        <span class="pill pill--stable">在任 {inOffice}</span>
+        <span class="pill">已毕业 {alumni}</span>
+        {pending > 0 && <span class="pill pill--review">待补充 {pending}</span>}
+      </div>
+    </header>
+
+    <div class="note-strip">
+      <span class="note-strip__icon" aria-hidden="true">✎</span>
+      <p class="note-strip__text">
+        想加一条？<strong>不用装任何软件</strong> —— 在 GitHub 上新建一个文件，把
+        <code>_template.md</code> 的内容抄进去，改好姓名、届别和那句话，提交即可。
+        正文可长可短，只有一句话也算数。<strong>你这一届的经历，就是下一届的参考资料。</strong>
+      </p>
+      {
+        repoReady && (
+          <div class="note-strip__actions">
+            <EditLink
+              href={newFileUrl(site.legacyDir, '2027-your-name.md')}
+              label="新建一条"
+              icon="plus"
+              cursorLabel="新建"
+            />
+            <EditLink
+              href={editFileUrl(`${site.legacyDir}/_template.md`)}
+              label="打开模板"
+              variant="compact"
+              cursorLabel="模板"
+            />
+          </div>
+        )
+      }
+    </div>
+
+    {
+      years.map((year) => {
+        const group = ordered.filter((entry) => entry.data.year === year);
+        return (
+          <section class="legacy-group" aria-label={`${year} 年`}>
+            <div class="legacy-year">
+              <span class="legacy-year__label">{year}</span>
+              <span class="legacy-year__rule" aria-hidden="true" />
+              <span class="count-label">{group.length} 条</span>
+            </div>
+
+            <div class="legacy-list">
+              {group.map((entry) => (
+                <LegacyEntry entry={entry} />
+              ))}
+            </div>
+          </section>
+        );
+      })
+    }
+  </div>
+</BaseLayout>

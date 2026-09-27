@@ -1,0 +1,105 @@
+/* ============================================================
+   Design tokens — "Eco Wiki"
+   Skeleton borrowed from nk.studio (deep teal, cyan accent,
+   star-field particles, serif display), accented with Alethia's
+   near-black depth, sage green and floating mineral objects.
+   ============================================================ */
+
+:root {
+  color-scheme: dark;
+
+  /* --- Surfaces: near-black at the top edge, teal as you descend --- */
+  --bg-void: #050B0B;
+  --bg-base: #08110F;
+  --bg-deep: #0C1B1A;
+  --bg-surface: #102423;
+  --bg-raised: #16302E;
+  --bg-inset: #071413;
+
+  /* --- nk.studio cyan: the single interactive hue --- */
+  --accent: #20E5B5;
+  --accent-soft: #6EE7C8;
+  --accent-deep: #12A882;
+  --accent-ghost: rgba(32, 229, 181, 0.08);
+  --accent-dim: rgba(32, 229, 181, 0.16);
+  --accent-line: rgba(32, 229, 181, 0.32);
+
+  /* --- Alethia sage: reserved for mineral / ambient accents --- */
+  --sage: #B8CC8C;
+  --sage-soft: #D3E0B4;
+  --sage-ghost: rgba(184, 204, 140, 0.12);
+
+  /* --- Semantic states --- */
+  --danger: #FF6B6B;
+  --danger-deep: #C0392B;
+  --danger-ghost: rgba(255, 107, 107, 0.1);
+  --warn: #FFD166;
+  --warn-ghost: rgba(255, 209, 102, 0.1);
+  --success: #4ADE80;
+  --success-ghost: rgba(74, 222, 128, 0.1);
+
+  /* --- Type --- */
+  --text-primary: #E8F0ED;
+  --text-secondary: #9CAFAF;
+  --text-tertiary: #5F7C7C;
+  --text-inverse: #06110F;
+
+  /* --- Hairlines --- */
+  --border: rgba(32, 229, 181, 0.12);
+  --border-strong: rgba(32, 229, 181, 0.3);
+  --border-neutral: rgba(232, 240, 237, 0.08);
+  --border-neutral-strong: rgba(232, 240, 237, 0.18);
+
+  /* --- Families --- */
+  --font-display: 'Instrument Serif', 'Noto Serif SC', Georgia, serif;
+  --font-sans: 'Inter', system-ui, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', ui-monospace, monospace;
+
+  /* --- Scale --- */
+  --step--2: 0.75rem;
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.125rem;
+  --step-2: 1.5rem;
+  --step-3: 2rem;
+  --step-4: 2.75rem;
+  --step-5: 3.75rem;
+  --step-6: clamp(3rem, 7vw, 5.5rem);
+
+  /* --- Space --- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+
+  /* --- Shape --- */
+  --r-xs: 4px;
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* --- Depth: border-led surfaces, glow reserved for hover/focus --- */
+  --glow-accent: 0 0 0 1px rgba(32, 229, 181, 0.25), 0 18px 60px -24px rgba(32, 229, 181, 0.45);
+  --glow-sage: 0 0 40px -8px rgba(184, 204, 140, 0.28);
+  --shadow-panel: 0 32px 90px -40px rgba(0, 0, 0, 0.9);
+
+  /* --- Motion --- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t-fast: 0.18s;
+  --t-base: 0.34s;
+  --t-slow: 0.7s;
+
+  /* --- Layout --- */
+  --shell: 1240px;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --header-h: 72px;
+}

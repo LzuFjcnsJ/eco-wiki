@@ -1,0 +1,51 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import EditLink from './EditLink.astro';
+import { site, repoReady, editFileUrl } from '../site.config';
+
+interface Props {
+  entry: CollectionEntry<'legacy'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const isPending = entry.data.placeholder;
+
+// 这一条在仓库里的位置 —— 旁边那个「编辑这条」直接跳过去
+const filePath = entry.filePath ?? `${site.legacyDir}/${entry.id}.md`;
+---
+
+<article class={`legacy-entry${isPending ? ' legacy-entry--pending' : ''}`} id={entry.id}>
+  <h2 class="legacy-entry__lesson">{entry.data.lesson}</h2>
+
+  <p class="legacy-entry__meta">
+    <span class="legacy-entry__name">{entry.data.name}</span>
+    <span aria-hidden="true">·</span>
+    <span>{entry.data.role}</span>
+    <span aria-hidden="true">·</span>
+    <span>{entry.data.cohort}</span>
+    <span class={`pill ${entry.data.stage === 'in-office' ? 'pill--stable' : ''}`}>
+      {entry.data.stage === 'in-office' ? '在任' : '已毕业'}
+    </span>
+    {isPending && <span class="pill pill--review">待补充</span>}
+  </p>
+
+  <div class="legacy-entry__body">
+    <Content />
+  </div>
+
+  {
+    repoReady && (
+      <p class="legacy-entry__actions">
+        <EditLink
+          href={editFileUrl(filePath)}
+          label="编辑这条"
+          variant="compact"
+          cursorLabel="编辑"
+        />
+        <span aria-hidden="true">·</span>
+        <span>署名或寄语有误？本人或同届都可以直接改</span>
+      </p>
+    )
+  }
+</article>

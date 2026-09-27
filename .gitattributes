@@ -1,0 +1,15 @@
+# 统一换行符为 LF。
+# 本地大概率是 Windows，而自动构建跑在 Linux 上；
+# 不统一的话，每次换机器拉取都会出现「整个文件都被改了」的假 diff，
+# 以后看修订历史根本分不清哪次是真改动。
+* text=auto eol=lf
+
+# 二进制文件不做换行转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary

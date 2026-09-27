@@ -1,0 +1,16 @@
+---
+interface Props {
+  count?: number;
+  color?: string;
+}
+const { count = 150, color = '#20E5B5' } = Astro.props;
+---
+
+<canvas
+  class="hero__particles"
+  id="particle-field"
+  data-particle-count={count}
+  data-particle-color={color}
+  role="img"
+  aria-label="缓速漂浮的星点粒子场"
+></canvas>
