@@ -13,7 +13,7 @@
 |---|---|
 | 线上地址 | <https://lzufjcnsj.github.io/eco-wiki/> |
 | 仓库 | `LzuFjcnsJ/eco-wiki`（public，**个人账号**） |
-| 分支 | `main`，最新提交 `8acf877` |
+| 分支 | `main`（最新提交号见仓库的提交历史或 Actions 页） |
 | 托管方式 | GitHub Pages + GitHub Actions（仓库里已配好工作流） |
 | 站点配置 | `src/site.config.ts`：`org: 'LzuFjcnsJ'`、`repo: 'eco-wiki'` |
 
